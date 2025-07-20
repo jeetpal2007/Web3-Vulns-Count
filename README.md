@@ -61,5 +61,69 @@ Note: Codebase cannot be disclosed so I created myself  a smart contract to demo
 18. Signature relay
 - The contract does not use any secret data to encode the borrower hash here an attacker can use this to other chain or replay the transaction .Use chain.id or nonce to fix this issue
 
+19. Unlimited mint-like behavior  
+* The contract allows minting or tax manipulation in a way that simulates unlimited minting. This can inflate the token supply or allow the owner to extract disproportionate value.
+
+20. No max tax fee limit  
+* There is no upper bound on how high the tax fee can be set. A malicious owner could set this to 100% and trap user funds.
+
+21. No Pausable Mechanism  
+* The contract lacks a `pause()` function, which is useful during emergencies or when bugs are found.
+
+22. No limit in `addBots()` – Denial of Service risk  
+* The `addBots()` function has no cap, meaning a huge number of addresses can be added. This bloats storage and can break loops that iterate over this list.
+
+23. Uncached `.length` in loops  
+* Accessing dynamic array `.length` directly in loops increases gas. Cache it to reduce gas costs.
+
+24. No slippage protection in swaps  
+* The swapping mechanism doesn’t protect users from price manipulation. Slippage parameters should be introduced to avoid MEV or sandwich attacks.
+
+25. Full centralization risk  
+* Critical functions are fully controlled by the contract owner. Recommend implementing a multisig or governance structure.
+
+26. Missing `ReentrancyGuard` in `swapAndSendFee()`  
+* This function handles fund transfers but lacks protection against reentrancy attacks.
+
+27. `manualSwap()` and `manualSend()` lack access control  
+* These functions should be restricted. Right now, any user might be able to call them and interfere with fee mechanics.
+
+28. Missing `Ownable2Step`  
+* The contract uses traditional `Ownable`. Switch to `Ownable2Step` for safer ownership transfers.
+
+29. No zero address check in `addBots()`  
+* The function does not validate addresses, and the zero address can be added.
+
+30. `sendETHToFee()` uses `.transfer()`  
+* Using `.transfer()` is discouraged because of the 2300 gas stipend. Use `.call{value: amount}("")` instead.
+
+31. No `require(amount > 0)` in transfers  
+* Transfers with 0 amount should be reverted to prevent unnecessary gas waste or potential bugs.
+
+32. `manualSend()` may send ETH to zero address  
+* There’s no check that the recipient is valid. This could result in loss of funds.
+
+33. `enableNewTax()` doesn’t emit previous value  
+* Lacks event logging of old vs. new values, which reduces transparency in tax changes.
+
+34. Should use `safeTransfer` / `safeApprove`  
+* For ERC20 transfers, always use `safeTransfer()` or `safeApprove()` to avoid non-standard token issues.
+
+35. No NatSpec comments  
+* Code lacks Solidity NatSpec documentation which is useful for audits and formal verification.
+
+36. Uses `SafeMath` in Solidity ^0.8.0  
+* Not needed in Solidity 0.8.x and above. Redundant code increases contract size.
+
+37. Uses `i++` instead of `++i` in loops  
+* `++i` is slightly cheaper than `i++` in gas. Small optimizations matter in large loops.
+
+---
+
+> 🧠 *More vulnerabilities and research will be added regularly. Stay tuned!*  
+> 🔗 *All issues responsibly disclosed and shared for educational purposes.*
+
+
+
 
   
