@@ -1,6 +1,6 @@
 # 🛡️ Smart Contract Vulnerabilities by Jeet Pal
 
-Welcome to my collection of real-world smart contract vulnerabilities that I discovered and responsibly disclosed. This repo acts as my public resume for smart contract security research.
+Welcome to my collection of real-world smart contract vulnerabilities that I discovered and responsibly disclosed. This repo acts as my public resume for smart contract security research [blog](https://medium.com/@jeetpal2007).
 
 ## 🚀 About Me
 I'm Jeet Pal (aka Mr. Mars Hacker), a smart contract auditor, bug bounty hunter, and Web3 security enthusiast.
