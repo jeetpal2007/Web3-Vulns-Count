@@ -118,7 +118,58 @@ Note: Codebase cannot be disclosed so I created myself  a smart contract to demo
 37. Uses `i++` instead of `++i` in loops  
 * `++i` is slightly cheaper than `i++` in gas. Small optimizations matter in large loops.
 
----
+38. Unsafe use of `_mint` instead of `_safeMint` in xyz.sol
+* `_mint` function is used while miniting the NFT. This doesn't check for if the contract NFT receviable or not
+
+39.Both block.prevrandao and block.timestamp are not reliably source of randonness
+* This can be manupluated by miners
+
+40.Improper Admin Address Validation and Missing Event in setTokenAdmin Function
+* The contract doesn't validate the input for zero address and if address is same as current one and no event emit for this
+
+41. Missing _disableInitializers() in FeeManager.sol
+* The FeeManager contract is upgradeable and uses a proxy pattern with an initialize() function. While the initializer modifier ensures initialize() can only be called once per proxy instance, the implementation (logic) contract itself is not protected.
+
+43. Incompatible ERC20 Handling – Non-Standard Tokens Like USDT Cause Liquidation Failure
+* The function assumes all ERC20 tokens strictly follow the standard and return a boolean value on transfer(). Tokens like USDT, which omit the return value, cause this call to revert, breaking liquidation logic.
+
+44.Fixed Hardcoded Data
+* Pegged the token with other coin (1 BTC = 100 YC token) allow frontrunning when price fall or rise
+
+45.No Slippage  protection 
+* When selling the token there is no Slippage  protection allow attacker to inflate the shares values and booked loss for victim
+
+46. No check for amount receive (protocol solvency)
+* Some token demand on-chain fees allow less money -IN and  mint equal share
+
+
+## Cario
+
+47. [This contain code of all the finding in a cario contract](https://blog.blockmagnates.com/starknet-cairo-vulnerability-unused-function-72eb82fb4a10)
+```
+    fn main()->u8{  //This is main function it call very fist when the contract it deployed
+
+let x:u8 = 5; //Variable declared with it type it is static type if you want you can deploy,not necessary but in audit it matter
+let y:u8 = 10; //same as above
+let z:u8 = 15; //same as above
+
+println!("{}{}{}",x,y,z); //Here we have print the variable in cairo we have to use {} to print variable till now if the contract is deployed  over cario version 2 then it is .print() function
+return add(x,y,z);  //Here the the return function call the add function and if you notice above there is u8 at main() function which defined the return type in cairo
+
+}
+
+
+
+fn add(a:u8,b:u8,c:u8) -> u8{ //Add function taking the variables and same returning a uint8 which is less then 256 there could be an Overflow or panic 
+return a+b+c;  //here the function will return the variables sum but here we can use not retuns but we can use a+b+c not ";" required if it is end statement it will reduced the complexity.
+}
+```
+
+
+
+  
+
+
 
 > 🧠 *More vulnerabilities and research will be added regularly. Stay tuned!*  
 > 🔗 *All issues responsibly disclosed and shared for educational purposes.*
